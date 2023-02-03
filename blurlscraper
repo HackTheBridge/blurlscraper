@@ -1,0 +1,36 @@
+#!/bin/bash
+
+        if [ -f ./$client/blogurls.txt ]; then
+                mv ./$client/blogurls.txt ./$client/blogurls.old.txt
+        fi
+
+        url=$(cat ./$client/sitemapurl.txt)
+        # Curl url, remove new lines and then add new lines after each </url>.
+        curl "$url" | tr -d '\n' | sed 's/<\/url>/<\/url>\n/g' > ./$client/sitemap.xml
+
+        # Grep for urls containing "blog" and "lastmod".
+        cat ./$client/sitemap.xml | grep "blog" | grep "lastmod" > ./$client/blogmap.xml
+
+        else
+                fi
+
+
+
+        if [ -f "./$client/blogurls.old.txt" ]; then
+                diff=`diff ./$client/blogurls.old.txt ./$client/blogurls.txt`
+                if [ -n "$diff" ]; then
+                        echo -e "\n\n###########################################\n\n"
+                        echo -e "           [!] NEW BLOG ALERT [!]"
+                        echo -e "\n\n###########################################\n\n"
+                        echo "blogurls.txt has changed for client: $client"
+                        newurl=$(echo "$diff" | awk '{print $2}')
+                        # If there's a difference, send a Slack notification
+                        curl -X POST -H 'Content-type: application/json' \
+                        --data "{\"text\":\"$client's has posted a new blog: $newurl\"}" \
+                        https://hooks.slack.com/services/<YOUR_WEBHOOK_KEY>
+                fi
+        else
+                echo "Previous version of blogurls.txt not found for client $client"
+        fi
+
+        done
