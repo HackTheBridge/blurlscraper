@@ -4,8 +4,10 @@ A bash script that scrapes blog urls from sitemaps and alerts you in Slack when 
 # Requirements:
 
 cat client.txt 
-```client1
+```
+client1
 client2
-client3```
+client3
+```
 
 
